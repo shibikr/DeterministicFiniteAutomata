@@ -13,6 +13,10 @@ public class States {
         this.states.add(state);
     }
 
+    public ArrayList<State> getStates() {
+        return states;
+    }
+
     public boolean isStatePresent(State state){
         return this.states.contains(state);
     }

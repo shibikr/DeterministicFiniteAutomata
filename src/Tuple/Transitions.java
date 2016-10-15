@@ -22,4 +22,12 @@ public class Transitions {
         return null;
     }
 
+    public boolean isAllTransitionsPresent(States states, Alphabets alphabets) {
+        for (State state: states.getStates()) {
+            for (Alphabet alphabet:alphabets.getAlphabets()) {
+               if(getMatchingTransition(state,alphabet)== null) return false;
+            }
+        }
+        return true;
+    }
 }

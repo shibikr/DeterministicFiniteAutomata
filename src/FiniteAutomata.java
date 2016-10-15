@@ -8,7 +8,7 @@ public class FiniteAutomata {
     private final State initialState;
     private final States finalStates;
 
-    public FiniteAutomata(States states, Alphabets alphabets, Transitions transitions, State initialState, States finalStates) {
+    private FiniteAutomata(States states, Alphabets alphabets, Transitions transitions, State initialState, States finalStates) {
         this.states = states;
         this.alphabets = alphabets;
         this.transitions = transitions;
@@ -16,27 +16,32 @@ public class FiniteAutomata {
         this.finalStates = finalStates;
     }
 
-    private boolean isValidInitialState(){
-        return this.states.isStatePresent(initialState);
-    }
-
-    private boolean isValidFinalStates(){
-        return this.states.isSubSet(this.finalStates);
-    }
-
-    private boolean isValidTransition() {
-        return true;
-    }
-
-    private boolean isValidFiniteAutomata(){
-        return isValidFinalStates() && isValidInitialState() && isValidTransition();
-    }
-
-
-    public boolean isStringPassing(String string) throws InvalidDFAException {
-        if(!isValidFiniteAutomata()){
+    public static FiniteAutomata createFiniteAutomata(States states, Alphabets alphabets, Transitions transitions, State initialState, States finalStates) throws InvalidDFAException {
+        if (!isValidFiniteAutomata(states, alphabets, transitions, initialState, finalStates)) {
             throw new InvalidDFAException();
         } else {
+            return new FiniteAutomata(states, alphabets, transitions, initialState, finalStates);
+        }
+    }
+
+    private static boolean isValidInitialState(States states, State initialState) {
+        return states.isStatePresent(initialState);
+    }
+
+    private static boolean isValidFinalStates(States states, States finalStates) {
+        return states.isSubSet(finalStates);
+    }
+
+    private static boolean isValidTransitions(Transitions transitions, States states, Alphabets alphabets) {
+        return transitions.isAllTransitionsPresent(states, alphabets);
+    }
+
+    private static boolean isValidFiniteAutomata(States states, Alphabets alphabtes,Transitions transitions, State initialState, States finalStates) {
+        return isValidFinalStates(states,finalStates) && isValidInitialState(states,initialState) && isValidTransitions(transitions, states, alphabtes);
+    }
+
+    public boolean isStringPassing(String string) throws InvalidDFAException {
+
             String[] text = string.split("");
             State inputTransitionState = this.initialState;
             for (String letter : text) {
@@ -50,5 +55,5 @@ public class FiniteAutomata {
             }
             return this.finalStates.isStatePresent(inputTransitionState);
         }
-    }
 }
+
