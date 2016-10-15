@@ -1,48 +1,54 @@
+import Exceptions.InvalidDFAException;
+import Tuple.*;
 
 public class FiniteAutomata {
-    private final String[] states;
-    private final char[] alphabets;
-    private final String[][] transitions;
-    private final String[] finalStates;
-    private String initialState;
+    private final States states;
+    private final Alphabets alphabets;
+    private final Transitions transitions;
+    private final State initialState;
+    private final States finalStates;
 
-    public FiniteAutomata(String[] states, char[] alphabets, String[][] transitions, String initialState, String[] finalStates) {
+    public FiniteAutomata(States states, Alphabets alphabets, Transitions transitions, State initialState, States finalStates) {
         this.states = states;
         this.alphabets = alphabets;
         this.transitions = transitions;
-        this.finalStates = finalStates;
         this.initialState = initialState;
+        this.finalStates = finalStates;
     }
 
-    private String[] getMatchingTransition(String initialState, String letter) {
-        String[] machingTransition = {};
-        for (String[] transition : this.transitions) {
-            if (transition[0].equals(initialState) && transition[1].equals(letter)) {
-                machingTransition = transition;
+    private boolean isValidInitialState(){
+        return this.states.isStatePresent(initialState);
+    }
+
+    private boolean isValidFinalStates(){
+        return this.states.isSubSet(this.finalStates);
+    }
+
+    private boolean isValidTransition() {
+        return true;
+    }
+
+    private boolean isValidFiniteAutomata(){
+        return isValidFinalStates() && isValidInitialState() && isValidTransition();
+    }
+
+
+    public boolean isStringPassing(String string) throws InvalidDFAException {
+        if(!isValidFiniteAutomata()){
+            throw new InvalidDFAException();
+        } else {
+            String[] text = string.split("");
+            State inputTransitionState = this.initialState;
+            for (String letter : text) {
+                Alphabet alphabet = new Alphabet(letter);
+                Transition currentTransitionState = this.transitions.getMatchingTransition(inputTransitionState, alphabet);
+                if (currentTransitionState != null) {
+                    inputTransitionState = currentTransitionState.getTransitionState();
+                } else {
+                    return false;
+                }
             }
+            return this.finalStates.isStatePresent(inputTransitionState);
         }
-        return machingTransition;
-    }
-
-    private boolean isFinalState(String lastState) {
-        boolean result = false;
-        for (String state : this.finalStates) {
-            if (lastState.equals(state)) result = true;
-        }
-        return result;
-    }
-
-    public boolean isStringPassing(String string) {
-        String[] text = string.split("");
-        String inputTransitionState = this.initialState;
-        for (String letter : text) {
-            String[] currentTransitionState = getMatchingTransition(inputTransitionState, letter);
-            if (currentTransitionState.length > 0) {
-                inputTransitionState = currentTransitionState[2];
-            } else {
-                return false;
-            }
-        }
-        return isFinalState(inputTransitionState);
     }
 }
