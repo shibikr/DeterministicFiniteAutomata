@@ -24,5 +24,4 @@ public class Transition {
         return this.transitionState;
     }
 
-
 }

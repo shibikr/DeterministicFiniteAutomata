@@ -36,24 +36,23 @@ public class FiniteAutomata {
         return transitions.isAllTransitionsPresent(states, alphabets);
     }
 
-    private static boolean isValidFiniteAutomata(States states, Alphabets alphabtes,Transitions transitions, State initialState, States finalStates) {
-        return isValidFinalStates(states,finalStates) && isValidInitialState(states,initialState) && isValidTransitions(transitions, states, alphabtes);
+    private static boolean isValidFiniteAutomata(States states, Alphabets alphabtes, Transitions transitions, State initialState, States finalStates) {
+        return isValidFinalStates(states, finalStates) && isValidInitialState(states, initialState) && isValidTransitions(transitions, states, alphabtes);
     }
 
     public boolean isStringPassing(String string) throws InvalidDFAException {
-
-            String[] text = string.split("");
-            State inputTransitionState = this.initialState;
-            for (String letter : text) {
-                Alphabet alphabet = new Alphabet(letter);
-                Transition currentTransitionState = this.transitions.getMatchingTransition(inputTransitionState, alphabet);
-                if (currentTransitionState != null) {
-                    inputTransitionState = currentTransitionState.getTransitionState();
-                } else {
-                    return false;
-                }
+        String[] text = string.split("");
+        State inputTransitionState = this.initialState;
+        for (String letter : text) {
+            Alphabet alphabet = new Alphabet(letter);
+            Transition currentTransitionState = this.transitions.getMatchingTransition(inputTransitionState, alphabet);
+            if (currentTransitionState != null) {
+                inputTransitionState = currentTransitionState.getTransitionState();
+            } else {
+                return false;
             }
-            return this.finalStates.isStatePresent(inputTransitionState);
         }
+        return this.finalStates.isStatePresent(inputTransitionState);
+    }
 }
 

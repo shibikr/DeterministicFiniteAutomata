@@ -1,7 +1,9 @@
 import Exceptions.InvalidDFAException;
 import Tuple.*;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +24,28 @@ public class FiniteAutomataTest {
         alphabets = new Alphabets();
         alphabets.add(alphabet1);
         alphabets.add(alphabet2);
+    }
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
+    public void throw_exception_for_invalid_FiniteAutomata() throws InvalidDFAException {
+        thrown.expect(InvalidDFAException.class);
+        thrown.expectMessage("Invalid DFA");
+
+        States states = new States();
+        states.add(state1);
+        states.add(state2);
+        Transition transition1 = new Transition(state1, alphabet2, state2);
+        Transition transition2 = new Transition(state1, alphabet1, state1);
+        Transitions transitions = new Transitions();
+        transitions.add(transition1);
+        transitions.add(transition2);
+        States finalStates = new States();
+        finalStates.add(state2);
+
+        FiniteAutomata.createFiniteAutomata(states, alphabets, transitions,state1,finalStates);
     }
 
     @Test
